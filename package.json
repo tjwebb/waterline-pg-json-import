@@ -1,0 +1,32 @@
+{
+  "name": "waterline-pg-json-import",
+  "version": "0.0.0",
+  "description": "Construct a Waterline ORM from a JSON Postgres Schema",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tjwebb/waterline-pg-json-import.git"
+  },
+  "keywords": [
+    "pg",
+    "waterline",
+    "json",
+    "import",
+    "orm",
+    "postgres",
+    "postgresql",
+    "etl",
+    "extract",
+    "load",
+    "transform"
+  ],
+  "author": "Travis Webb <me@traviswebb.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tjwebb/waterline-pg-json-import/issues"
+  },
+  "homepage": "https://github.com/tjwebb/waterline-pg-json-import"
+}

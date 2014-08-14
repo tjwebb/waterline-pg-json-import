@@ -1,3 +1,6 @@
+schema_mocha.json
+*.sw*
+
 # Logs
 logs
 *.log
