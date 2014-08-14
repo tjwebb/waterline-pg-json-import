@@ -28,5 +28,11 @@
   "bugs": {
     "url": "https://github.com/tjwebb/waterline-pg-json-import/issues"
   },
-  "homepage": "https://github.com/tjwebb/waterline-pg-json-import"
+  "homepage": "https://github.com/tjwebb/waterline-pg-json-import",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^1.21.4"
+  }
 }

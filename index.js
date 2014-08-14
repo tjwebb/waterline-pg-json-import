@@ -1,0 +1,3 @@
+exports.fromJSON = function (obj) {
+
+};
