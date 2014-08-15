@@ -4,4 +4,4 @@ node_js:
   - "0.11"
 
 before_script:
-  - wget -qO- --header="Accept-Encoding: gzip" https://s3.amazonaws.com/com.xtuple.deploy-assets/schemas/postbooks460-mobilized.json | gunzip > schema_mocha.json
+  - wget https://github.com/tjwebb/pg-json-schema-export/releases/download/v0.11.4/postbooks_demo_460.json -qO build/postbooks_demo_460.json
