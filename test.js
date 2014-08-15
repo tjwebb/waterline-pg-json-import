@@ -3,6 +3,7 @@ var assert = require('assert');
 var _ = require('lodash');
 var importer = require('./');
 var Waterline = require('waterline');
+var util = require('util');
 
 describe('waterline-pg-json-import', function () {
   var json = require('./build/postbooks_demo_460');
@@ -46,16 +47,15 @@ describe('waterline-pg-json-import', function () {
         }
       };
       before(function (done) {
-        waterline.initialize(wlContext, function (err, _collections) {
-          //console.log(_collections);
-          collections = _collections;
+        waterline.initialize(wlContext, function (err, orm) {
+          collections = orm.collections;
 
           done(err);
         });
       });
 
-      it('should load collection', function () {
-
+      it('can create empty model', function () {
+        collections.accnt.create();
       });
 
 

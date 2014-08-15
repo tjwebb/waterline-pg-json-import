@@ -20,12 +20,13 @@ var typeMap = {
   'timestamp with time zone': 'datetime',
   ARRAY: 'array',
   bytea: 'binary',
-  json: 'json'
+  json: 'json',
+  bigint: 'integer'
 };
 
-var yesnoMap = {
-  'YES': true,
-  'NO': false
+var requiredMap = {
+  'YES': false,
+  'NO': true
 };
 
 function createModel (table, name, json) {
@@ -46,7 +47,7 @@ function createColumn (column, name, json) {
   // resolve column polymorphism
   return {
     type: typeMap[column.data_type],
-    required: !yesnoMap[column.is_nullable],
+    required: requiredMap[column.is_nullable],
     defaultsTo: column.column_default
   };
 }
