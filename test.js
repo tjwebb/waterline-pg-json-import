@@ -58,7 +58,6 @@ describe('waterline-pg-json-import', function () {
         collections.accnt.create();
       });
 
-
     });
 
   });

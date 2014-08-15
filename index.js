@@ -29,7 +29,7 @@ var requiredMap = {
   'NO': true
 };
 
-function createModel (table, name, json) {
+function createModel (table, name, json, schema) {
   return {
     adapter: 'postgresql',
     tableName: name,
@@ -38,18 +38,23 @@ function createModel (table, name, json) {
     description: table.obj_description,
 
     attributes: _.object(_.keys(table.columns), _.map(table.columns, function (column, name) {
-      return createColumn(column, name, json);
+      return createColumn(column, name, json, schema);
     }))
   };
 }
 
-function createColumn (column, name, json) {
+function createColumn (column, name, json, schema) {
   // resolve column polymorphism
   return {
     type: typeMap[column.data_type],
     required: requiredMap[column.is_nullable],
-    defaultsTo: column.column_default
+    defaultsTo: column.column_default,
+    autoIncrement: getAutoIncrement(column, json, schema)
   };
+}
+
+function getAutoIncrement (column, json, schema) {
+  return (_.isNumber(column.increment));
 }
 
 /**
@@ -57,6 +62,6 @@ function createColumn (column, name, json) {
  */
 exports.fromJSON = function (json, schema) {
   return _.map(json[schema].tables, function (table, name) {
-    return createModel(table, name, json);
+    return createModel(table, name, json, schema);
   });
 };
