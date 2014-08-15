@@ -3,3 +3,5 @@ node_js:
   - "0.10"
   - "0.11"
 
+before_script:
+  - wget -qO- --header="Accept-Encoding: gzip" https://s3.amazonaws.com/com.xtuple.deploy-assets/schemas/postbooks460-mobilized.json | gunzip > schema_mocha.json
