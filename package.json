@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/tjwebb/waterline-pg-json-import",
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "waterline": "^0.10.8"
   },
   "devDependencies": {
     "mocha": "^1.21.4"
