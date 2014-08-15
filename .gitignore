@@ -1,5 +1,6 @@
 schema_mocha.json
 *.sw*
+*.tmp
 
 # Logs
 logs

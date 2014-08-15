@@ -32,6 +32,7 @@ function createModel (table, name, json) {
   return {
     adapter: 'postgresql',
     tableName: name,
+    identity: name,
     schema: true,
     description: table.obj_description,
 
@@ -42,6 +43,7 @@ function createModel (table, name, json) {
 }
 
 function createColumn (column, name, json) {
+  // resolve column polymorphism
   return {
     type: typeMap[column.data_type],
     required: !yesnoMap[column.is_nullable],
@@ -57,4 +59,3 @@ exports.fromJSON = function (json, schema) {
     return createModel(table, name, json);
   });
 };
-
