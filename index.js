@@ -3,6 +3,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 var Promise = require('bluebird');
+var Waterline = require('waterline');
 
 /**
  * A mapping of Postgres type to Waterline type. A reverse of
@@ -31,9 +32,10 @@ var requiredMap = {
   'NO': true
 };
 
-function createModel (table, json) {
+function createModel (table, json, connection) {
   var model = {
     adapter: 'postgresql',
+    connection: connection,
     dynamicFinders: false,
     associationFinders: false,
     tableName: table.table_name,
@@ -109,15 +111,11 @@ function createColumn (column, json) {
   });
 }
 
-function getAutoIncrement (column, json) {
-  return _.isNumber(column.increment);
-}
-
 /**
  * Import a JSON Postgres schema into a Waterline ORM
  */
-exports.fromJSON = function (json) {
+exports.toORM = function (json, connection) {
   return _.map(json.tables, function (table) {
-    return createModel(table, json);
+    return Waterline.Collection.extend(createModel(table, json, connection));
   });
 };
