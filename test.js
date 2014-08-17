@@ -12,6 +12,7 @@ describe('waterline-pg-json-import', function () {
   describe('#fromJSON', function () {
     before(function () {
       definition = importer.fromJSON(json, 'public');
+      fs.writeFileSync('./build/output.json', JSON.stringify(definition, null, 2));
       waterline = new Waterline();
     });
 
@@ -54,8 +55,13 @@ describe('waterline-pg-json-import', function () {
         });
       });
 
-      it('can create empty model', function () {
-        collections.accnt.create();
+      it('can create empty model', function (done) {
+        collections.accnt.create({ })
+          .then(function (accnt) {
+            //console.log(accnt);
+            done();
+          })
+          .catch(done);
       });
 
     });
