@@ -34,6 +34,8 @@ var requiredMap = {
 function createModel (table, json) {
   var model = {
     adapter: 'postgresql',
+    dynamicFinders: false,
+    associationFinders: false,
     tableName: table.table_name,
     identity: table.table_name,
     schema: true,

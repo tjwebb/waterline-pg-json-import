@@ -48,7 +48,9 @@ describe('waterline-pg-json-import', function () {
         }
       };
       before(function (done) {
+        console.log('after loadCollection, before initialize', util.inspect(process.memoryUsage()));
         waterline.initialize(wlContext, function (err, orm) {
+          console.log('after initialize', util.inspect(process.memoryUsage()));
           collections = orm.collections;
 
           done(err);
@@ -58,7 +60,7 @@ describe('waterline-pg-json-import', function () {
       it('can create empty model', function (done) {
         collections.accnt.create({ })
           .then(function (accnt) {
-            //console.log(accnt);
+            console.log(accnt);
             done();
           })
           .catch(done);
