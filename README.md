@@ -3,9 +3,9 @@ waterline-pg-json-import
 
 Construct a Waterline ORM from a Postgres Schema.
 
-[![Build Status](https://travis-ci.org/tjwebb/waterline-pg-json-import.svg?branch=master)](https://travis-ci.org/tjwebb/waterline-pg-json-import)
-[![NPM version](https://badge.fury.io/js/waterline-pg-json-import.svg)](http://badge.fury.io/js/waterline-pg-json-import)
-[![Dependency Status](https://david-dm.org/tjwebb/waterline-pg-json-import.svg)](https://david-dm.org/tjwebb/waterline-pg-json-import)
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Dependency Status][daviddm-image]][daviddm-url]
 
 ## Install
 ```sh
@@ -41,3 +41,13 @@ waterline.initialize(configuration, function (err, orm) {
 });
 
 ```
+
+## License
+MIT
+
+[npm-image]: https://img.shields.io/npm/v/waterline-pg-json-import.svg?style=flat
+[npm-url]: https://npmjs.org/package/waterline-pg-json-import
+[travis-image]: https://img.shields.io/travis/tjwebb/waterline-pg-json-import.svg?style=flat
+[travis-url]: https://travis-ci.org/tjwebb/pg-json-schema-export
+[daviddm-image]: http://img.shields.io/david/tjwebb/waterline-pg-json-import.svg?style=flat
+[daviddm-url]: https://david-dm.org/tjwebb/waterline-pg-json-import
