@@ -4,7 +4,7 @@
   "description": "Construct a Waterline ORM from a JSON Postgres Schema",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec -b"
   },
   "repository": {
     "type": "git",

@@ -101,8 +101,9 @@ function createColumn (column, json) {
   var tableConstraints = json.constraints[column.table_name];
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
   var attribute = {
-    required: column.is_nullable,
-    unique: isUnique(columnConstraints)
+    required: !column.is_nullable,
+    unique: isUnique(columnConstraints),
+    defaultsTo: column.column_default
   };
   var foreignKeyConstraint = getForeignKeyConstraint(columnConstraints);
 
@@ -126,8 +127,11 @@ function createColumn (column, json) {
  * @see <https://github.com/tjwebb/pg-json-schema-export>
  */
 exports.toORM = function (json, connection) {
+  var logfile = './build/toORM_'+ connection + '.json';
+  fs.unlinkSync(logfile);
   return _.map(json.tables, function (table) {
     var model = createModel(table, json, connection);
+    fs.appendFileSync(logfile, JSON.stringify(model, null, 2));
     return Waterline.Collection.extend(model);
   });
 };
