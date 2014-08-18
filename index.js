@@ -27,11 +27,6 @@ var typeMap = {
   bigint: 'integer'
 };
 
-var requiredMap = {
-  'YES': false,
-  'NO': true
-};
-
 function createModel (table, json, connection) {
   var model = {
     adapter: 'postgresql',
@@ -95,7 +90,7 @@ function createColumn (column, json) {
   var tableConstraints = json.constraints[column.table_name];
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
   var attribute = {
-    required: !!requiredMap[column.is_nullable],
+    required: { 'YES': false, 'NO': true }[column.is_nullable],
     unique: isUnique(columnConstraints)
   };
   var foreignKeyConstraint = getForeignKeyConstraint(columnConstraints);
@@ -113,6 +108,11 @@ function createColumn (column, json) {
 
 /**
  * Import a JSON Postgres schema into a Waterline ORM
+ *
+ * @param json        {Object} Postgres Schema as JSON Object
+ * @param connection  {String} Waterline connection
+ * @return {Array} Waterline.Collection objects
+ * @see <https://github.com/tjwebb/pg-json-schema-export>
  */
 exports.toORM = function (json, connection) {
   return _.map(json.tables, function (table) {

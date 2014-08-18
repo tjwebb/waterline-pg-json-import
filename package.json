@@ -37,6 +37,7 @@
     "bluebird": "^2.3.0",
     "lodash": "^2.4.1",
     "sails-disk": "^0.10.3",
+    "sails-memory": "^0.10.2",
     "sails-postgresql": "^0.10.7",
     "waterline": "^0.10"
   },
