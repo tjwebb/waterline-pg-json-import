@@ -13,8 +13,7 @@ deploy:
   provider: npm
   email: me@traviswebb.com
   api_key:
-    secure: QeFne6bvNRe/l4ACyDfan7l0Ug8dC2hVl7ma+/9LS2GmsQh+40w8TM2zw9e5gcOM6/lq79e3OKhnNzCqdFoCe2/gSJjovFcrgbY18Rl4helaDel9Z3bROFCv9IFb+XW1rTzvpbASrdMMv06WSn0M4ffvi7OQpoortKkUMvrDBQ4=
+    secure: XR2jElipy2t1ERxGlvxoTCm4AIdBnvwYsDKU9H0GaHEhosckgikiScS24uYsQSaLm8QlNCUKH+feDflvOubmu6JLUX0CanN0DZLMUoYxpqRhuEFkh/Kzxdmk3dBZGQuk74u2jatHTL5httEOMzNnX+RKmrsgVneCO7mBEb4Uuh0=
   on:
     tags: true
     repo: tjwebb/waterline-pg-json-import
-    all_branches: true
