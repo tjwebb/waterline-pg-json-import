@@ -34,7 +34,7 @@
     "lodash": "^2.4.1",
     "sails-disk": "^0.10.3",
     "sails-postgresql": "^0.10.7",
-    "waterline": "git://github.com/tjwebb/waterline"
+    "waterline": "^0.10"
   },
   "devDependencies": {
     "mocha": "^1.21.4"
