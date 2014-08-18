@@ -29,6 +29,8 @@ var typeMap = {
 };
 
 function createModel (table, json, connection) {
+  var keyed = false;  // XXX https://github.com/balderdashy/sails-postgresql/issues/87
+
   var model = {
     adapter: 'postgresql',
     connection: connection,
@@ -40,7 +42,13 @@ function createModel (table, json, connection) {
     description: table.obj_description,
 
     attributes: _.object(_.keys(table.columns), _.map(table.columns, function (column, columnName) {
-      return createColumn(column, json);
+      var attribute = createColumn(column, json);
+      if (attribute.primaryKey) {
+        // XXX https://github.com/balderdashy/sails-postgresql/issues/87
+        if (keyed) attribute.primaryKey = false;
+        keyed = true;
+      }
+      return attribute;
     }))
   };
 
@@ -49,11 +57,14 @@ function createModel (table, json, connection) {
 }
 
 function isUnique (constraints) {
-  return !!_.find(constraints, { constraint_type: 'UNIQUE' });
+  return _.find(constraints, { constraint_type: 'UNIQUE' });
 }
 
-function isPrimaryKey (constraints) {
-  return !!_.find(constraints, { constraint_type: 'PRIMARY KEY' });
+function isPrimaryKey (constraints, column) {
+  return !!_.find(constraints, {
+    constraint_type: 'PRIMARY KEY',
+    referenced_column: column.column_name
+  });
 }
 
 function getForeignKeyConstraint (constraints) {
@@ -101,7 +112,7 @@ function createColumn (column, json) {
 
   return _.extend(attribute, {
     type: typeMap[column.data_type],
-    primaryKey: isPrimaryKey(columnConstraints),
+    primaryKey: isPrimaryKey(columnConstraints, column),
     autoIncrement: hasSequence(column, json)
   });
 }

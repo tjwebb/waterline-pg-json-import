@@ -67,20 +67,18 @@ describe('waterline-pg-json-import', function () {
       }
     };
     before(function (done) {
-      this.timeout(60 * 1000);
+      this.timeout(300 * 1000); // 5 minutes
       var orm = importer.toORM(json, 'postgresql');
       var waterline = new Waterline();
       _.each(orm, waterline.loadCollection, waterline);
 
       waterline.initialize(pgConfiguration, function (err, orm) {
         if (err) {
-          console.log(err);
+          console.log(util.inspect(err));
           throw err;
         }
 
         collections = orm.collections;
-
-        console.log('hello');
 
         done(err);
       });
