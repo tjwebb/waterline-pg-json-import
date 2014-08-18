@@ -128,7 +128,6 @@ function createColumn (column, json) {
 exports.toORM = function (json, connection) {
   return _.map(json.tables, function (table) {
     var model = createModel(table, json, connection);
-    console.log(model);
     return Waterline.Collection.extend(model);
   });
 };
