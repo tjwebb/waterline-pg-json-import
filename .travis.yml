@@ -16,5 +16,5 @@ deploy:
     secure: GfmYGdfwLph7pCGW0HK3Mc0jAiEk1NIEkxik9aEziL8tuon/n9fpdIja4wfHM11vYRuwvRXJzG2O//gZE8pUVSlNnSwWdVFWHk8dMZwvXbMqH3/pl52rWHZ8S9SVJA2p4792E949d63+qKlGHrBcLkTSmAek0OT84vjXUO5zRRc=
   on:
     tags: true
-    repo: tjwebb/pg-json-schema-export
+    repo: tjwebb/waterline-pg-json-import
     all_branches: true
