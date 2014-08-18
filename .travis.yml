@@ -17,3 +17,4 @@ deploy:
   on:
     tags: true
     repo: tjwebb/pg-json-schema-export
+    all_branches: true
