@@ -17,3 +17,4 @@ deploy:
   on:
     tags: true
     repo: tjwebb/waterline-pg-json-import
+    all_branches: true
