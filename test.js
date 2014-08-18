@@ -18,7 +18,7 @@ describe('waterline-pg-json-import', function () {
     }
   };
 
-  describe.skip('#toORM', function () {
+  describe('#toORM', function () {
     var orm, waterline, collections;
     it('should run without error', function () {
       orm = importer.toORM(json, 'mocha');
@@ -40,7 +40,7 @@ describe('waterline-pg-json-import', function () {
         });
       });
     });
-    describe.skip('Waterline Models', function () {
+    describe('Waterline Models', function () {
       it('can create empty model', function (done) {
         collections.accnt.create({ })
           .then(function (accnt) {
@@ -61,7 +61,7 @@ describe('waterline-pg-json-import', function () {
           adapter: 'postgresql',
           user: process.env.POSTGRES_USER || 'postgres',
           password: process.env.POSTGRES_PASSWORD || 'postgres',
-          database: process.env.POSTGRES_DATABASE || 'postgres',
+          database: 'mocha',
           port: process.env.POSTGRES_PORT || 5432
         }
       }
@@ -77,9 +77,7 @@ describe('waterline-pg-json-import', function () {
           console.log(util.inspect(err));
           throw err;
         }
-
         collections = orm.collections;
-
         done(err);
       });
     });
