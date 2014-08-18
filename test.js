@@ -9,17 +9,17 @@ describe('waterline-pg-json-import', function () {
   var json = require('./build/postbooks_demo_460');
   var configuration = {
     adapters: {
-      memory: require('sails-memory')
+      memory: require('sails-memory'),
     },
     connections: {
       mocha: {
-        adapter: 'memory'
+        adapter: 'memory',
       }
     }
   };
-  var orm, waterline, collections;
 
   describe('#toORM', function () {
+    var orm, waterline, collections;
     it('should run without error', function () {
       orm = importer.toORM(json, 'mocha');
     });
@@ -40,16 +40,58 @@ describe('waterline-pg-json-import', function () {
         });
       });
     });
+    describe.skip('Waterline Models', function () {
+      it('can create empty model', function (done) {
+        collections.accnt.create({ })
+          .then(function (accnt) {
+            done();
+          }).catch(done);
+      });
+    });
   });
 
-  describe('Waterline Models', function () {
+
+  describe.skip('postgres adapter', function () {
+    var collections;
+    var pgConfiguration = {
+      adapters: {
+        postgresql: require('sails-postgresql')
+      },
+      connections: {
+        postgresql: {
+          adapter: 'postgresql',
+          user: process.env.POSTGRES_USER || 'postgres',
+          password: process.env.POSTGRES_PASSWORD || 'postgres',
+          database: process.env.POSTGRES_DATABASE || 'postgres',
+          port: process.env.POSTGRES_PORT || 5432
+        }
+      }
+    };
+    before(function (done) {
+      this.timeout(60 * 1000);
+      var orm = importer.toORM(json, 'postgresql');
+      var waterline = new Waterline();
+      _.each(orm, waterline.loadCollection, waterline);
+
+      waterline.initialize(pgConfiguration, function (err, orm) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+
+        collections = orm.collections;
+
+        console.log('hello');
+
+        done(err);
+      });
+    });
     it('can create empty model', function (done) {
       collections.accnt.create({ })
         .then(function (accnt) {
           done();
         }).catch(done);
     });
-
   });
 
 });

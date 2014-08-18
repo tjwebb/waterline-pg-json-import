@@ -4,6 +4,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var Promise = require('bluebird');
 var Waterline = require('waterline');
+var pluralize = require('pluralize');
 
 /**
  * A mapping of Postgres type to Waterline type. A reverse of
@@ -69,9 +70,8 @@ function getReferencingColumns (table, json) {
     constraint_type: 'FOREIGN KEY',
   });
   var keys = _.map(_.pluck(referencingConstraints, 'table_name'), function (table) {
-    return table + 's';
+    return pluralize.plural(table);
   });
-
   return _.object(keys, _.map(referencingConstraints, function (constraint) {
     return {
       collection: constraint.table_name,
