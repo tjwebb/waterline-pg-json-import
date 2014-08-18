@@ -9,7 +9,7 @@ Construct a Waterline ORM from a Postgres Schema.
 
 ## Install
 ```sh
-$ npm install waterline-pg-json-import
+$ npm install waterline-pg-json-import --save
 ```
 
 ## Usage
