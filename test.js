@@ -18,7 +18,7 @@ describe('waterline-pg-json-import', function () {
     }
   };
 
-  describe('#toORM', function () {
+  describe.skip('#toORM', function () {
     var orm, waterline, collections;
     it('should run without error', function () {
       orm = importer.toORM(json, 'mocha');
@@ -50,8 +50,7 @@ describe('waterline-pg-json-import', function () {
     });
   });
 
-
-  describe.skip('postgres adapter', function () {
+  describe('postgres adapter', function () {
     var collections;
     var pgConfiguration = {
       adapters: {

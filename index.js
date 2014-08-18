@@ -90,7 +90,7 @@ function createColumn (column, json) {
   var tableConstraints = json.constraints[column.table_name];
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
   var attribute = {
-    required: { 'YES': false, 'NO': true }[column.is_nullable],
+    required: column.is_nullable,
     unique: isUnique(columnConstraints)
   };
   var foreignKeyConstraint = getForeignKeyConstraint(columnConstraints);
@@ -116,6 +116,8 @@ function createColumn (column, json) {
  */
 exports.toORM = function (json, connection) {
   return _.map(json.tables, function (table) {
-    return Waterline.Collection.extend(createModel(table, json, connection));
+    var model = createModel(table, json, connection);
+    console.log(model);
+    return Waterline.Collection.extend(model);
   });
 };
