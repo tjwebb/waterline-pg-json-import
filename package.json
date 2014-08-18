@@ -1,6 +1,6 @@
 {
   "name": "waterline-pg-json-import",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Construct a Waterline ORM from a JSON Postgres Schema",
   "main": "index.js",
   "scripts": {
