@@ -2,19 +2,17 @@ language: node_js
 node_js:
 - '0.10'
 - '0.11'
-
 notifications:
   email: false
-
 before_script:
-- wget https://github.com/tjwebb/pg-json-schema-export/releases/download/v0.13.0/postbooks_demo_460.json -qO build/postbooks_demo_460.json
-
+- wget https://github.com/tjwebb/pg-json-schema-export/releases/download/v0.13.0/postbooks_demo_460.json
+  -qO build/postbooks_demo_460.json
 deploy:
   provider: npm
   email: me@traviswebb.com
   api_key:
-    secure: GfmYGdfwLph7pCGW0HK3Mc0jAiEk1NIEkxik9aEziL8tuon/n9fpdIja4wfHM11vYRuwvRXJzG2O//gZE8pUVSlNnSwWdVFWHk8dMZwvXbMqH3/pl52rWHZ8S9SVJA2p4792E949d63+qKlGHrBcLkTSmAek0OT84vjXUO5zRRc=
+    secure: QeFne6bvNRe/l4ACyDfan7l0Ug8dC2hVl7ma+/9LS2GmsQh+40w8TM2zw9e5gcOM6/lq79e3OKhnNzCqdFoCe2/gSJjovFcrgbY18Rl4helaDel9Z3bROFCv9IFb+XW1rTzvpbASrdMMv06WSn0M4ffvi7OQpoortKkUMvrDBQ4=
   on:
     tags: true
-    repo: tjwebb/waterline-pg-json-import
+    repo: tjwebb/pg-json-schema-export
     all_branches: true
