@@ -29,7 +29,7 @@ describe('waterline-pg-json-import', function () {
     });
 
     describe('Waterline#initialize', function () {
-      this.timeout(60 * 1000);
+      this.timeout(120 * 1000);
       var collections;
       before(function (done) {
         waterline.initialize(configuration, function (err, orm) {
