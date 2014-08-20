@@ -33,7 +33,7 @@ var configuration = {
     }
   }
 };
-var orm = importer.toORM(json, 'readme');
+var orm = importer.initialize(json, 'readme');
 var collections;
 waterline.initialize(configuration, function (err, orm) {
   if (err) throw err;
@@ -41,6 +41,28 @@ waterline.initialize(configuration, function (err, orm) {
 });
 
 ```
+
+## API
+
+#### `.initialize(json, connection)`
+Generate the Waterline ORM
+
+| @param | description
+|:---|:---|
+`json` | JSON object representing the exported schema
+`connection` | name of the Waterline connection to use
+| **@return** | **description**
+`Array` | Array of `Waterline.Collection` objects
+
+#### `.import(json, waterline)`
+Import JSON into a Database
+
+| @param | description
+|:---|:---|
+`json` | JSON object containing the exported data
+`waterline` | reference to the Waterline instance used to initialize the ORM
+| **@return** | **description**
+`Object` | Report of number of rows inserted into each table
 
 ## License
 MIT

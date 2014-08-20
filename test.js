@@ -18,10 +18,10 @@ describe('waterline-pg-json-import', function () {
     }
   };
 
-  describe('#toORM', function () {
+  describe('#initialize', function () {
     var orm, waterline, collections;
     it('should run without error', function () {
-      orm = importer.toORM(json, 'mocha');
+      orm = importer.initialize(json, 'mocha');
     });
     it('result is accepted by waterline.loadCollection without error', function () {
       waterline = new Waterline();
@@ -52,46 +52,51 @@ describe('waterline-pg-json-import', function () {
     });
   });
 
-  describe('postgres adapter', function () {
-    var collections;
-    var pgConfiguration = {
-      adapters: {
-        postgresql: require('sails-postgresql')
-      },
-      connections: {
-        postgresql: {
-          adapter: 'postgresql',
-          user: process.env.POSTGRES_USER || 'postgres',
-          password: process.env.POSTGRES_PASSWORD || 'postgres',
-          database: process.env.POSTGRES_DATABASE || 'postgres',
-          port: process.env.POSTGRES_PORT || 5432
-        }
-      }
-    };
-    it('should create postgres schema', function (done) {
-      this.timeout(300 * 1000); // 5 minutes
-      var orm = importer.toORM(json, 'postgresql');
-      var waterline = new Waterline();
-      _.each(orm, waterline.loadCollection, waterline);
+  describe('#load', function () {
 
-      waterline.initialize(pgConfiguration, function (err, orm) {
-        if (err) {
-          console.error(error);
-          return done(err);
-        }
-        collections = orm.collections;
-        done();
-      });
-    });
-    it('can create empty model', function (done) {
-      collections.crmacct.create({ crmacct_id: 2, crmacct_number: 'xyz' })
-        .then(function (accnt) {
-          done();
-        }).catch(function (error) {
-          console.error(error);
-          done(error);
-        });
-    });
   });
 
+  describe('sandbox tests', function () {
+    describe('postgres adapter', function () {
+      var collections;
+      var pgConfiguration = {
+        adapters: {
+          postgresql: require('sails-postgresql')
+        },
+        connections: {
+          postgresql: {
+            adapter: 'postgresql',
+            user: process.env.POSTGRES_USER || 'postgres',
+            password: process.env.POSTGRES_PASSWORD || 'postgres',
+            database: process.env.POSTGRES_DATABASE || 'postgres',
+            port: process.env.POSTGRES_PORT || 5432
+          }
+        }
+      };
+      it('should create postgres schema', function (done) {
+        this.timeout(300 * 1000); // 5 minutes
+        var orm = importer.initialize(json, 'postgresql');
+        var waterline = new Waterline();
+        _.each(orm, waterline.loadCollection, waterline);
+
+        waterline.initialize(pgConfiguration, function (err, orm) {
+          if (err) {
+            console.error(error);
+            return done(err);
+          }
+          collections = orm.collections;
+          done();
+        });
+      });
+      it('can create empty model', function (done) {
+        collections.crmacct.create({ crmacct_id: 2, crmacct_number: 'xyz' })
+          .then(function (accnt) {
+            done();
+          }).catch(function (error) {
+            console.error(error);
+            done(error);
+          });
+      });
+    });
+  });
 });
