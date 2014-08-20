@@ -28,7 +28,17 @@ var typeMap = {
   bigint: 'integer'
 };
 
+function convertType (value, type) {
+  if ('integer' === type && _.isNumber(value)) return parseInt(value);
+  if ('numeric' === type && _.isNumber(value)) return parseFloat(value);
+  if ('boolean' === type) return (value === 'true');
+
+  return value;
+}
+
 function createModel (table, json, connection) {
+  var keyed = false;  // XXX https://github.com/balderdashy/sails-postgresql/issues/87
+
   var model = {
     adapter: 'postgresql',
     connection: connection,
@@ -37,10 +47,19 @@ function createModel (table, json, connection) {
     tableName: table.table_name,
     identity: table.table_name,
     schema: true,
+    autoCreatedAt: false,
+    autoUpdatedAt: false,
+    autoPK: false,
     description: table.obj_description,
 
     attributes: _.object(_.keys(table.columns), _.map(table.columns, function (column, columnName) {
-      return createColumn(column, json);
+      var attribute = createColumn(column, json);
+      if (attribute.primaryKey) {
+        // XXX https://github.com/balderdashy/sails-postgresql/issues/87
+        if (keyed) attribute.primaryKey = false;
+        keyed = true;
+      }
+      return attribute;
     }))
   };
 
@@ -48,12 +67,18 @@ function createModel (table, json, connection) {
   return model;
 }
 
-function isUnique (constraints) {
-  return !!_.find(constraints, { constraint_type: 'UNIQUE' });
+function isUnique (column, constraints) {
+  return _.any([
+    isPrimaryKey(constraints, column),
+    !!_.find(constraints, { constraint_type: 'UNIQUE', referenced_column: column.column_name })
+  ]);
 }
 
-function isPrimaryKey (constraints) {
-  return !!_.find(constraints, { constraint_type: 'PRIMARY KEY' });
+function isPrimaryKey (constraints, column) {
+  return !!_.find(constraints, {
+    constraint_type: 'PRIMARY KEY',
+    referenced_column: column.column_name
+  });
 }
 
 function getForeignKeyConstraint (constraints) {
@@ -80,18 +105,30 @@ function getReferencingColumns (table, json) {
   }));
 }
 
-function hasSequence (column, json) {
-  var tableSequences = json.sequences[column.table_name];
-  var columnSequence = _.isObject(tableSequences) && tableSequences[column.column_name];
-  return columnSequence && columnSequence.increment === '1';
+function hasAssociatedSequence (column, json) {
+  var sequenceTable = json.sequences[column.table_name];
+  var sequenceColumn = sequenceTable && sequenceTable[column.column_name];
+
+  return (sequenceColumn || { }).increment === '1';
+}
+
+function hasImplicitSequence (column) {
+  return /nextval/.test(column.column_default);
+}
+
+function getDefaultsTo (column, json) {
+  if (hasImplicitSequence(column)) return undefined;
+
+  return convertType(column.column_default, typeMap[column.data_type]);
 }
 
 function createColumn (column, json) {
   var tableConstraints = json.constraints[column.table_name];
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
   var attribute = {
-    required: { 'YES': false, 'NO': true }[column.is_nullable],
-    unique: isUnique(columnConstraints)
+    required: !column.is_nullable,
+    unique: isUnique(column, columnConstraints),
+    defaultsTo: getDefaultsTo(column, json)
   };
   var foreignKeyConstraint = getForeignKeyConstraint(columnConstraints);
 
@@ -101,8 +138,7 @@ function createColumn (column, json) {
 
   return _.extend(attribute, {
     type: typeMap[column.data_type],
-    primaryKey: isPrimaryKey(columnConstraints),
-    autoIncrement: hasSequence(column, json)
+    primaryKey: isPrimaryKey(columnConstraints, column)
   });
 }
 
@@ -115,7 +151,11 @@ function createColumn (column, json) {
  * @see <https://github.com/tjwebb/pg-json-schema-export>
  */
 exports.toORM = function (json, connection) {
+  var logfile = './build/toORM_'+ connection + '.json';
+  try { fs.unlinkSync(logfile); } catch (e) { }
   return _.map(json.tables, function (table) {
-    return Waterline.Collection.extend(createModel(table, json, connection));
+    var model = createModel(table, json, connection);
+    fs.appendFileSync(logfile, JSON.stringify(model, null, 2));
+    return Waterline.Collection.extend(model);
   });
 };
