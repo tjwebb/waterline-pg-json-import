@@ -41,11 +41,10 @@ describe('waterline-pg-json-import', function () {
     });
     describe('Waterline Models', function () {
       it('can create empty model', function (done) {
-        collections.accnt.create({ })
+        collections.crmacct.create({ crmacct_id: 100, crmacct_number: 'qwert', crmacct_active: true })
           .then(function (accnt) {
             done();
           }).catch(function (error) {
-            console.log(error);
             done(error);
           });
       });
@@ -68,28 +67,23 @@ describe('waterline-pg-json-import', function () {
         }
       }
     };
-    before(function (done) {
+    it('should create postgres schema', function (done) {
       this.timeout(300 * 1000); // 5 minutes
       var orm = importer.toORM(json, 'postgresql');
       var waterline = new Waterline();
       _.each(orm, waterline.loadCollection, waterline);
 
       waterline.initialize(pgConfiguration, function (err, orm) {
-        if (err) {
-          console.log(err.message);
-          console.log(util.inspect(err));
-          return done(err);
-        }
+        if (err) return done(err);
         collections = orm.collections;
         done();
       });
     });
     it('can create empty model', function (done) {
-      collections.accnt.create({ })
+      collections.crmacct.create({ crmacct_id: 2, crmacct_number: 'xyz' })
         .then(function (accnt) {
           done();
         }).catch(function (error) {
-          console.log(error);
           done(error);
         });
     });

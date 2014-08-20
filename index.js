@@ -28,6 +28,14 @@ var typeMap = {
   bigint: 'integer'
 };
 
+function convertType (value, type) {
+  if ('integer' === type && _.isNumber(value)) return parseInt(value);
+  if ('numeric' === type && _.isNumber(value)) return parseFloat(value);
+  if ('boolean' === type) return (value === 'true');
+
+  return value;
+}
+
 function createModel (table, json, connection) {
   var keyed = false;  // XXX https://github.com/balderdashy/sails-postgresql/issues/87
 
@@ -39,6 +47,9 @@ function createModel (table, json, connection) {
     tableName: table.table_name,
     identity: table.table_name,
     schema: true,
+    autoCreatedAt: false,
+    autoUpdatedAt: false,
+    autoPK: false,
     description: table.obj_description,
 
     attributes: _.object(_.keys(table.columns), _.map(table.columns, function (column, columnName) {
@@ -56,8 +67,11 @@ function createModel (table, json, connection) {
   return model;
 }
 
-function isUnique (constraints) {
-  return _.find(constraints, { constraint_type: 'UNIQUE' });
+function isUnique (column, constraints) {
+  return _.any([
+    isPrimaryKey(constraints, column),
+    !!_.find(constraints, { constraint_type: 'UNIQUE', referenced_column: column.column_name })
+  ]);
 }
 
 function isPrimaryKey (constraints, column) {
@@ -91,10 +105,25 @@ function getReferencingColumns (table, json) {
   }));
 }
 
-function hasSequence (column, json) {
-  var tableSequences = json.sequences[column.table_name];
-  var columnSequence = _.isObject(tableSequences) && tableSequences[column.column_name];
-  return columnSequence && columnSequence.increment === '1';
+function hasAssociatedSequence (column, json) {
+  var sequenceTable = json.sequences[column.table_name];
+  var sequenceColumn = sequenceTable && sequenceTable[column.column_name];
+
+  return (sequenceColumn || { }).increment === '1';
+}
+
+function hasImplicitSequence (column) {
+  return /nextval/.test(column.column_default);
+}
+
+function getDefaultsTo (column, json) {
+  if (hasImplicitSequence(column)) return undefined;
+
+  return convertType(column.column_default, typeMap[column.data_type]);
+}
+
+function getAutoIncrememt (column, json) {
+  return hasAssociatedSequence(column, json) || hasImplicitSequence(column);
 }
 
 function createColumn (column, json) {
@@ -102,8 +131,8 @@ function createColumn (column, json) {
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
   var attribute = {
     required: !column.is_nullable,
-    unique: isUnique(columnConstraints),
-    defaultsTo: column.column_default
+    unique: isUnique(column, columnConstraints),
+    defaultsTo: getDefaultsTo(column, json)
   };
   var foreignKeyConstraint = getForeignKeyConstraint(columnConstraints);
 
@@ -114,7 +143,7 @@ function createColumn (column, json) {
   return _.extend(attribute, {
     type: typeMap[column.data_type],
     primaryKey: isPrimaryKey(columnConstraints, column),
-    autoIncrement: hasSequence(column, json)
+    //autoIncrement: getAutoIncrememt(column, json)
   });
 }
 
@@ -128,7 +157,7 @@ function createColumn (column, json) {
  */
 exports.toORM = function (json, connection) {
   var logfile = './build/toORM_'+ connection + '.json';
-  fs.unlinkSync(logfile);
+  try { fs.unlinkSync(logfile); } catch (e) { }
   return _.map(json.tables, function (table) {
     var model = createModel(table, json, connection);
     fs.appendFileSync(logfile, JSON.stringify(model, null, 2));
