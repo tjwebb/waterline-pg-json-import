@@ -122,10 +122,6 @@ function getDefaultsTo (column, json) {
   return convertType(column.column_default, typeMap[column.data_type]);
 }
 
-function getAutoIncrememt (column, json) {
-  return hasAssociatedSequence(column, json) || hasImplicitSequence(column);
-}
-
 function createColumn (column, json) {
   var tableConstraints = json.constraints[column.table_name];
   var columnConstraints = _.isObject(tableConstraints) && tableConstraints[column.column_name];
@@ -142,8 +138,7 @@ function createColumn (column, json) {
 
   return _.extend(attribute, {
     type: typeMap[column.data_type],
-    primaryKey: isPrimaryKey(columnConstraints, column),
-    //autoIncrement: getAutoIncrememt(column, json)
+    primaryKey: isPrimaryKey(columnConstraints, column)
   });
 }
 

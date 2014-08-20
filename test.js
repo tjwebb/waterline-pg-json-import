@@ -45,6 +45,7 @@ describe('waterline-pg-json-import', function () {
           .then(function (accnt) {
             done();
           }).catch(function (error) {
+            console.error(error);
             done(error);
           });
       });
@@ -74,7 +75,10 @@ describe('waterline-pg-json-import', function () {
       _.each(orm, waterline.loadCollection, waterline);
 
       waterline.initialize(pgConfiguration, function (err, orm) {
-        if (err) return done(err);
+        if (err) {
+          console.error(error);
+          return done(err);
+        }
         collections = orm.collections;
         done();
       });
@@ -84,6 +88,7 @@ describe('waterline-pg-json-import', function () {
         .then(function (accnt) {
           done();
         }).catch(function (error) {
+          console.error(error);
           done(error);
         });
     });
